@@ -9,7 +9,7 @@ notebook = ttk.Notebook(window)
 notebook.pack()
 frames = {}
 tab_id = -1
-semesters, hidden = [], []
+semesters, hidden = [], {}
 for year in range(1, 5):
     for sem in range(1, 5):
         tab_id += 1
@@ -20,7 +20,7 @@ for year in range(1, 5):
         notebook.add(frames[semester], text=semester)
         if semester[-1] in {"3", "4"}:
             notebook.hide(tab_id)
-            hidden.append(semester)
+            hidden[semester] = 0
 
 def open_csv():
     pass
@@ -32,9 +32,9 @@ def exit():
     pass
 
 def toggle_hide(semester):
-    print(semester)
-    # dialog = tk.Tk()
-    # dialog.title("Toggle hidden semesters")
+    if hidden[semester]:
+        pass #TODO
+
 
 menubar = tk.Menu(window)
 filemenu = tk.Menu(menubar, tearoff=0)
@@ -48,11 +48,17 @@ viewmenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="View", menu=viewmenu)
 
 togglemenu = tk.Menu(viewmenu)
-for semester in hidden:
-    togglemenu.add_command(label=semester, command=lambda: toggle_hide(semester))
+togglemenu.add_checkbutton(label="Year 1 Sem 3", command=lambda: toggle_hide("Year 1 Sem 3"))
+togglemenu.add_checkbutton(label="Year 1 Sem 4", command=lambda: toggle_hide("Year 1 Sem 4"))
+togglemenu.add_checkbutton(label="Year 2 Sem 3", command=lambda: toggle_hide("Year 2 Sem 3"))
+togglemenu.add_checkbutton(label="Year 2 Sem 4", command=lambda: toggle_hide("Year 2 Sem 4"))
+togglemenu.add_checkbutton(label="Year 3 Sem 3", command=lambda: toggle_hide("Year 3 Sem 3"))
+togglemenu.add_checkbutton(label="Year 3 Sem 4", command=lambda: toggle_hide("Year 3 Sem 4"))
+togglemenu.add_checkbutton(label="Year 4 Sem 3", command=lambda: toggle_hide("Year 4 Sem 3"))
+togglemenu.add_checkbutton(label="Year 4 Sem 4", command=lambda: toggle_hide("Year 4 Sem 4"))
+
+
 viewmenu.add_cascade(label="Hide/Unhide semesters", menu=togglemenu)
 
 window.config(menu=menubar)
 window.mainloop()
-
-print(hidden)
