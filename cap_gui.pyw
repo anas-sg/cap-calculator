@@ -22,13 +22,6 @@ for year in range(1, 5):
             notebook.hide(tab_id)
             hidden.append(semester)
 
-
-
-# solve_btn = tk.Button(window, text="Solve", command=get_puzzle, bg="green")
-# solve_btn.grid(column=3, row=9)
-# reset = tk.Button(window, text="Reset", command=clear_grid, bg="red")
-# reset.grid(column=5, row=9)
-
 def open_csv():
     pass
 
@@ -38,9 +31,10 @@ def save():
 def exit():
     pass
 
-def toggle_hide():
-    dialog = tk.Tk()
-    dialog.title("Toggle hidden semesters")
+def toggle_hide(semester):
+    print(semester)
+    # dialog = tk.Tk()
+    # dialog.title("Toggle hidden semesters")
 
 menubar = tk.Menu(window)
 filemenu = tk.Menu(menubar, tearoff=0)
@@ -51,7 +45,14 @@ filemenu.add_command(label="Exit", command=window.quit)
 menubar.add_cascade(label="File", menu=filemenu)
 
 viewmenu = tk.Menu(menubar, tearoff=0)
-viewmenu.add_command(label="Hide/Unhide semesters", command=toggle_hide)
 menubar.add_cascade(label="View", menu=viewmenu)
+
+togglemenu = tk.Menu(viewmenu)
+for semester in hidden:
+    togglemenu.add_command(label=semester, command=lambda: toggle_hide(semester))
+viewmenu.add_cascade(label="Hide/Unhide semesters", menu=togglemenu)
+
 window.config(menu=menubar)
 window.mainloop()
+
+print(hidden)
