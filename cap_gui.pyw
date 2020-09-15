@@ -20,7 +20,7 @@ for year in range(1, 5):
         notebook.add(frames[semester], text=semester)
         if semester[-1] in {"3", "4"}:
             notebook.hide(tab_id)
-            hidden[semester] = 0
+            hidden[semester] = 1
 
 def open_csv():
     pass
@@ -33,7 +33,13 @@ def exit():
 
 def toggle_hide(semester):
     if hidden[semester]:
-        pass #TODO
+        notebook.add(frames[semester], text=semester)
+        hidden[semester] = 0
+    else:
+        year, sem = int(semester[5]), int(semester[11])
+        tab_id = (year - 1) * 4 + (sem - 1)
+        notebook.hide(tab_id)
+        hidden[semester] = 1
 
 
 menubar = tk.Menu(window)
