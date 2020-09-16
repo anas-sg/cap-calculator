@@ -1,3 +1,6 @@
+from csv import reader
+import argparse
+
 grade_points = {
     "A+": 5,
     "A": 5,
@@ -24,6 +27,11 @@ def cap(results: list) -> float:
     return sum_product / sum_credits
 
 if __name__ == "__main__":
+    my_parser = argparse.ArgumentParser(description='Calculate and display the CAP of a student from the grades input.')
+    my_parser.version = '1.0'
+    my_parser.add_argument('-f', '--file', nargs='?', const='nofile', default=None, help='path to CSV', action='store')
+    args = my_parser.parse_args()
+    #todo: check for value of file option
     while True:
         try:
             semesters = int(input("Enter number of semesters: "))
