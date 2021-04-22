@@ -101,18 +101,3 @@ if __name__ == "__main__":
                 raise ValueError("Index is out of range.")
     else:        
         print(f"CAP: {round(cap(read_input(file_arg)), 2)}")
-        
-
-
-
-# results = [("B+", 6), ("B+", 4), ("A-", 4), ("B-", 2), ("B", 2)]
-# print(cap(results))
-
-# results += [("A", 6), ("B", 4), ("B+", 4), ("B", 4)]
-# print(cap(results))
-
-# results += [("B-", 4), ("C+", 4), ("A-", 4), ("B-", 4), ("B+", 4)]
-# print(cap(results))
-
-# results += [("B-", 4), ("B-", 4), ("B-", 4), ("D", 4), ("D", 4)]
-# print(cap(results))
