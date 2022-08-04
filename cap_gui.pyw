@@ -25,6 +25,13 @@ def centre(win):
     offset_y = int(win.winfo_screenheight()/2 - win.winfo_height()/2)
     win.geometry(f"+{offset_x}+{offset_y}")
 
+def classification(cap):
+    if cap >= 4.50: return "Honours (Highest Distinction)"
+    if cap >= 4: return "Honours (Distinction)"
+    if cap >= 3.5: return "Honours (Merit)"
+    if cap >= 3: return "Honours"
+    return "Pass"
+
 def cap(results: list) -> float:
     """Return CAP based on list of grades"""
     sum_credits = sum_product = 0
@@ -44,16 +51,11 @@ def add():
     listbox_list.append(grade)
     listvar.set(listbox_list)
     results = [i[1:] for i in listbox_list]
-    print(calculated := round(cap(results), 2))
-    cap_label['text'] = f"CAP: {calculated}"
-
-def edit():
-    print("editing...")
-    on_closing()
+    calculated = round(cap(results), 2)
+    cap_label['text'] = f"CAP: {calculated}\n{classification(calculated)}"
 
 def on_closing():
     global ADDITIONAL_WINDOWS
-    print("destroying window")
     EDIT_WINDOW.destroy()
     ADDITIONAL_WINDOWS = False    
 
@@ -69,16 +71,19 @@ def right_click(arg):
 
 def double_click(arg):
     global ADDITIONAL_WINDOWS, EDIT_WINDOW
-    print("enter double")
-    print(ADDITIONAL_WINDOWS)
+    def edit():
+        new_grade = (module_text_edit.get(), grade_text_edit.get(), int(mc_text_edit.get()))
+        listbox_list[i] = new_grade
+        listvar.set(listbox_list)
+        results = [i[1:] for i in listbox_list]
+        calculated = round(cap(results), 2)
+        cap_label['text'] = f"CAP: {calculated}\n{classification(calculated)}"
+        on_closing()
     if not ADDITIONAL_WINDOWS:
-        print("enter additional")
         ADDITIONAL_WINDOWS = True
-        i = listbox.curselection()
-        print(i)
-        # print(arg)
-        # print("double_click")
-#TODO: ADD IN EDIT        
+        i = listbox.curselection()[0]
+        module, grade, mc = listbox_list[i]
+     
         EDIT_WINDOW = tk.Toplevel()
         EDIT_WINDOW.wm_title("Edit")
 
@@ -88,10 +93,11 @@ def double_click(arg):
 
         module_text_edit = tk.StringVar()
         module_entry_edit = tk.Entry(EDIT_WINDOW, textvariable=module_text_edit)
+        module_entry_edit.insert(0, module)
         mc_text_edit = tk.StringVar(EDIT_WINDOW)
-        mc_dropdown_edit = ttk.OptionMenu(EDIT_WINDOW, mc_text_edit, 4, *MC_LIST)
+        mc_dropdown_edit = ttk.OptionMenu(EDIT_WINDOW, mc_text_edit, mc, *MC_LIST)
         grade_text_edit = tk.StringVar(EDIT_WINDOW)
-        grade_dropdown_edit = ttk.OptionMenu(EDIT_WINDOW, grade_text_edit, "B", *GRADE_LIST)
+        grade_dropdown_edit = ttk.OptionMenu(EDIT_WINDOW, grade_text_edit, grade, *GRADE_LIST)
         add_button_edit = tk.Button(EDIT_WINDOW, text="Edit", command=edit)
 
         module_label_edit.grid(column=0, row=0)
@@ -107,7 +113,6 @@ def double_click(arg):
         EDIT_WINDOW.grid()
         EDIT_WINDOW.transient(window)
         EDIT_WINDOW.grab_set()
-        # EDIT_WINDOW.form.initial_focus()
         EDIT_WINDOW.update()
         offset_x = int(EDIT_WINDOW.winfo_screenwidth()/2 - EDIT_WINDOW.winfo_width()/2)
         offset_y = int(EDIT_WINDOW.winfo_screenheight()/2 - EDIT_WINDOW.winfo_height()/2)
@@ -123,7 +128,6 @@ def delete(arg):
     results = [i[1:] for i in listbox_list]
     print(calculated := round(cap(results), 2))
     cap_label['text'] = f"CAP: {calculated}"
-    
 
 window = tk.Tk()
 window.title("CAP calculator")
