@@ -69,6 +69,22 @@ def right_click(arg):
     print(arg)
     print("right click")
 
+def shift_up(arg):
+    i = listbox.curselection()[0]
+    try:
+        listbox_list[i-1], listbox_list[i] = listbox_list[i], listbox_list[i-1]
+        listvar.set(listbox_list)
+    except IndexError:
+        pass    
+
+def shift_down(arg):
+    i = listbox.curselection()[0]
+    try:
+        listbox_list[i+1], listbox_list[i] = listbox_list[i], listbox_list[i+1]
+        listvar.set(listbox_list)
+    except IndexError:
+        pass
+
 def double_click(arg):
     global ADDITIONAL_WINDOWS, EDIT_WINDOW
     def edit():
@@ -154,6 +170,8 @@ listbox.config(yscrollcommand=scrollbar.set)
 listbox.bind("<Button-3>", right_click)
 listbox.bind("<Delete>", delete)
 listbox.bind("<Double-Button-1>", double_click)
+listbox.bind("<Control-Up>", shift_up)
+listbox.bind("<Control-Down>", shift_downlistbox.bind("<Control-Up>", shift_up))
 
 cap_label = tk.Label(window, text="CAP:")
 
