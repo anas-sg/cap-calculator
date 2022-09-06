@@ -171,7 +171,7 @@ listbox.bind("<Button-3>", right_click)
 listbox.bind("<Delete>", delete)
 listbox.bind("<Double-Button-1>", double_click)
 listbox.bind("<Control-Up>", shift_up)
-listbox.bind("<Control-Down>", shift_downlistbox.bind("<Control-Up>", shift_up))
+listbox.bind("<Control-Down>", shift_down)
 
 cap_label = tk.Label(window, text="CAP:")
 
