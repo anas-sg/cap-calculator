@@ -14,6 +14,7 @@ grade_points = {
     "D":   1,
     "F":   0
 }
+
 MIN_SEMESTERS, MAX_SEMESTERS = 1, 10
 MIN_MC, MAX_MC = 1, 20
 sum_credits = sum_product = 0
@@ -32,7 +33,7 @@ def read_input(file: str=None) -> list:
     """Read from standard input/CSV into list"""
     results = []
     if not file:
-        print("For each module, type grade,MCs (eg. B+,4) and ENTER.\nIf MCs are absent, it will be assumed to be 4.\nPress Ctrl+C when done:")
+        print(f"{OKGREEN}For each module, type grade,MCs (eg. B+,4) and ENTER.\n{WARNING}If MCs are absent, it will be assumed to be 4.{ENDC}\nPress {OKCYAN}Ctrl+C{ENDC} when done:")
     else:
         try:
             csv = open(file)
@@ -40,7 +41,9 @@ def read_input(file: str=None) -> list:
             raise OSError(f"{file} not found")
     while True:
         try:
-            result = csv.readline()[:-1].split(",") if file else input().split(",")            
+            result = (csv.readline() if file else input()).strip().split(",")
+            if result[0].startswith('#'):
+                continue
             if result[0]:
                 print(result)
                 if len(result) == 2:
