@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog as filedialog
-from csv import reader
+from csv import reader, writer
 
 MC_LIST = list(range(9))
 GRADE_LIST = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "D+", "D", "F", "F*", "S", "U"]
@@ -68,32 +68,39 @@ def open_csv():
     with open(fl) as f:
         read = reader(f)
         for row in read:
-            if row[0].startswith("#"):
-                continue
-            else:
-                print(row)
-                module, grade, mc = row
-                if not mc:
-                    mc = 4
+            if row:
+                if row[0].startswith("#"):
+                    continue
                 else:
-                    try:
-                        mc = int(mc)
-                    except ValueError:
-                        raise ValueError(f"{fl}:{read.line_num}\n\t{mc} is not a digit")
-                if mc not in MC_LIST:
-                    raise ValueError(f"{fl}:{read.line_num}\n\t{mc} is not valid MCs. Value must be in the range [0,8]")
-                if not grade:
-                    raise ValueError(f"{fl}:{read.line_num}\n\tgrade is missing")
-                elif grade.upper() not in grade_points:
-                    raise ValueError(f"{fl}:{read.line_num}\n\t{grade} is an invalid grade")
-                listbox_list.append((module, grade, mc))
+                    print(row)
+                    module, grade, mc = row
+                    if not mc:
+                        mc = 4
+                    else:
+                        try:
+                            mc = int(mc)
+                        except ValueError:
+                            raise ValueError(f"{fl}:{read.line_num}\n\t{mc} is not a digit")
+                    if mc not in MC_LIST:
+                        raise ValueError(f"{fl}:{read.line_num}\n\t{mc} is not valid MCs. Value must be in the range [0,8]")
+                    if not grade:
+                        raise ValueError(f"{fl}:{read.line_num}\n\tgrade is missing")
+                    elif grade.upper() not in grade_points:
+                        raise ValueError(f"{fl}:{read.line_num}\n\t{grade} is an invalid grade")
+                    listbox_list.append((module, grade, mc))
         listvar.set(listbox_list)
         results = [i[1:] for i in listbox_list]
         calculated = round(cap(results), 2)
         cap_label['text'] = f"CAP: {calculated}\n{classification(calculated)}"
 
-def save():
-    pass
+def save_csv():
+    ftypes = [('CSV files', '*.csv')]
+    file = filedialog.asksaveasfilename(filetypes = ftypes)
+    with open(file + ".csv", 'w', newline='') as f:
+        write = writer(f)
+        for record in listbox_list:
+            write.writerow(record)
+    # print(dialog)
 
 def right_click(arg):
     print(arg)
@@ -227,7 +234,7 @@ cap_label.grid(column=1, row=2, columnspan=2)
 menubar = tk.Menu(window)
 filemenu = tk.Menu(menubar, tearoff=0)
 filemenu.add_command(label="Import from CSV", command=open_csv)
-filemenu.add_command(label="Save to CSV", command=save)
+filemenu.add_command(label="Save to CSV", command=save_csv)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=window.quit)
 menubar.add_cascade(label="File", menu=filemenu)
