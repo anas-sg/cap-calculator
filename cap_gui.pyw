@@ -1,5 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import tkinter.filedialog as filedialog
+from csv import reader
 
 MC_LIST = list(range(9))
 GRADE_LIST = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "D+", "D", "F", "F*", "S", "U"]
@@ -60,7 +62,35 @@ def on_closing():
     ADDITIONAL_WINDOWS = False    
 
 def open_csv():
-    pass
+    ftypes = [('CSV files', '*.csv'), ('All files', '*')]
+    dialog = filedialog.Open(filetypes = ftypes)
+    fl = dialog.show()
+    with open(fl) as f:
+        read = reader(f)
+        for row in read:
+            if row[0].startswith("#"):
+                continue
+            else:
+                print(row)
+                module, grade, mc = row
+                if not mc:
+                    mc = 4
+                else:
+                    try:
+                        mc = int(mc)
+                    except ValueError:
+                        raise ValueError(f"{fl}:{read.line_num}\n\t{mc} is not a digit")
+                if mc not in MC_LIST:
+                    raise ValueError(f"{fl}:{read.line_num}\n\t{mc} is not valid MCs. Value must be in the range [0,8]")
+                if not grade:
+                    raise ValueError(f"{fl}:{read.line_num}\n\tgrade is missing")
+                elif grade.upper() not in grade_points:
+                    raise ValueError(f"{fl}:{read.line_num}\n\t{grade} is an invalid grade")
+                listbox_list.append((module, grade, mc))
+        listvar.set(listbox_list)
+        results = [i[1:] for i in listbox_list]
+        calculated = round(cap(results), 2)
+        cap_label['text'] = f"CAP: {calculated}\n{classification(calculated)}"
 
 def save():
     pass
@@ -145,6 +175,12 @@ def delete(arg):
     print(calculated := round(cap(results), 2))
     cap_label['text'] = f"CAP: {calculated}"
 
+def clear(arg=None):
+    global cap_label
+    listbox_list.clear()
+    listvar.set(listbox_list)
+    cap_label['text'] = "CAP:"
+
 window = tk.Tk()
 window.title("CAP calculator")
 window.call("wm", "attributes", ".", "-topmost", "1")
@@ -195,6 +231,10 @@ filemenu.add_command(label="Save to CSV", command=save)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=window.quit)
 menubar.add_cascade(label="File", menu=filemenu)
+
+editmenu = tk.Menu(menubar, tearoff=0)
+editmenu.add_command(label="Clear all", command=clear)
+menubar.add_cascade(label="Edit", menu=editmenu)
 window.config(menu=menubar)
 
 window.update()
