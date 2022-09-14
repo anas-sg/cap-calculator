@@ -32,7 +32,8 @@ def classification(cap):
     if cap >= 4: return "Honours (Distinction)"
     if cap >= 3.5: return "Honours (Merit)"
     if cap >= 3: return "Honours"
-    return "Pass"
+    if cap >= 2: return "Pass"
+    return "DANGER"
 
 def cap(results: list) -> float:
     """Return CAP based on list of grades"""
@@ -100,7 +101,6 @@ def save_csv():
         write = writer(f)
         for record in listbox_list:
             write.writerow(record)
-    # print(dialog)
 
 def right_click(arg):
     print(arg)
@@ -186,6 +186,8 @@ def clear(arg=None):
     global cap_label
     listbox_list.clear()
     listvar.set(listbox_list)
+    mc_text.set(4)
+    grade_text.set("B")
     cap_label['text'] = "CAP:"
 
 window = tk.Tk()
